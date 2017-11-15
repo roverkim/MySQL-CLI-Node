@@ -1,0 +1,24 @@
+{
+  "name": "mysql-cli-node",
+  "version": "1.0.0",
+  "description": "Amazon-like storefront using Node and MySQL. The app will take in orders from customers and deplete stock from the store's inventory, This app provides customer, manager and supervisor views.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roverkim/MySQL-CLI-Node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roverkim/MySQL-CLI-Node/issues"
+  },
+  "homepage": "https://github.com/roverkim/MySQL-CLI-Node#readme",
+  "dependencies": {
+    "async": "^2.6.0",
+    "inquirer": "^4.0.0",
+    "mysql": "^2.15.0"
+  }
+}

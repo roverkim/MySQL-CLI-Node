@@ -157,7 +157,7 @@ const sqlFunctions = { // sqlFunctions Object that Contains All the SQL Function
 
       let quantity = result[1][0].stock_quantity - quanitiy; // Subtract Quantity Purchased from Actual Quanity in Inventory
 
-      if (quantity >= 0) { // Proceed to Update Quantity if Quantity of Product is more than 1
+      if (quantity >= 0) { // Proceed to Update Quantity if Quantity of Product is more or equal to 0
         console.log(" \n Item Purchased! ");
         let totalRevenue = (result[1][0].price * quanitiy) + result[1][0].product_sales // Take Price of Product Multiplied by Quantity and Add to Existing Product Revenue
         sqlFunctions.updateQuantity(productID, quantity, totalRevenue); // Updates the Database by passing ID, New quantity and revenue as arguments

@@ -2,9 +2,6 @@
 
 MySQL-CLI-Node is an Amazon-like storefront CLI that was created using Node, Inquirer, Async and MySQL. Users can choose from 1 of 3 views to interact with the database.
 
-`Async` Npm Package: Due to Asynchronus Nature of Javascript, I added this package to ensure the sequential execution of each function.
-
-
 ## Usage
 
 This Program automatically creates a MySQL database, inputs two tables (products & department) and mock data into it.
@@ -19,7 +16,6 @@ In `Customer View`, the app will take in orders from customers and deplete stock
 In `Manager View`, the app will list all available stock, show stock that have a quantity below 5, allow stock to be purchased and allows new products to be added.
 
 In `Supervisor View`, the app will list totals sales by department and allow the user to add a new department.
-
 
 Basic error handling was done to prevent invalid input.
 
@@ -42,6 +38,7 @@ password: " ", // Change to Your Connection Password
 
 To run MySQL-CLI-Node, type `node index.js`
 
+`Async Package`: Due to Asynchronus Nature of Javascript, I added this package to ensure the sequential execution of each function.
 
 ## Files
 

@@ -29,7 +29,7 @@ MySQL-CLI-Node can be downloaded by cloning this repository `https://github.com/
 
 After installation, open node, navigate to the file and run `npm install`.
 
-**Note** You do not need to manually create a database using SQL Workbench. The program does that for you. However, you need to have an existing MySQL Connection.
+**Note:** You do not need to manually create a database using SQL Workbench. The program does that for you. However, you need to have an existing MySQL Connection.
 
 In `sqlFunctions.js`, under the *connection* function, Please Change:
 
@@ -38,7 +38,7 @@ const connection = mysql.createConnection(
   {
     host: "localhost",
     user: "Change Your to your Connection Username"
-    password: "Change to Your Connection Password" 
+    password: "Change to Your Connection Password"
   }
 );
 

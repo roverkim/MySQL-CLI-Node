@@ -33,8 +33,16 @@ After installation, open node, navigate to the file and run `npm install`.
 
 In `sqlFunctions.js`, under the *connection* function, Please Change:
 
-user: "root", // Change Your to your Connection Username
-password: " ", // Change to Your Connection Password
+```
+const connection = mysql.createConnection(
+  {
+    host: "localhost",
+    user: "Change Your to your Connection Username"
+    password: "Change to Your Connection Password" 
+  }
+);
+
+```
 
 To run MySQL-CLI-Node, type `node index.js`
 

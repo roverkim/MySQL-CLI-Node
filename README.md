@@ -2,6 +2,8 @@
 
 MySQL-CLI-Node is an Amazon-like storefront CLI that was created using Node, Inquirer, Async and MySQL. Users can choose from 1 of 3 views to interact with the database.
 
+`Async` Npm Package: Due to Asynchronus Nature of Javascript, I added this package to ensure the sequential execution of each function.
+
 
 ## Usage
 
@@ -31,7 +33,7 @@ MySQL-CLI-Node can be downloaded by cloning this repository `https://github.com/
 
 After installation, open node, navigate to the file and run `npm install`.
 
-*Note* You do not need to manually create a database using SQL Workbench. The program does that for you. However, you need to have an existing MySQL Connection.
+**Note** You do not need to manually create a database using SQL Workbench. The program does that for you. However, you need to have an existing MySQL Connection.
 
 In `sqlFunctions.js`, under the *connection* function, Please Change:
 

@@ -1,18 +1,21 @@
 /////////////////////////////////////////////// /* Imports */ //////////////////////////////////////////////////////////
 const async = require('async');
-const functions = require('../sqlFunctions.js');
-
+const inquirer = require('inquirer'); // Package for Displaying and Getting User Input
+const functions = require('../sqlFunctions.js'); // File that contains Common Resuable Functions
+const questions = require('../questions/questions.js'); // Internal File that Contains all Questions
 
 /////////////////////////////////////////////// /* Customer */ //////////////////////////////////////////////////////////
 
-function bamazonCustomer(){
+function bamazonCustomer(){ // Function that Handles Customer View
 
-    async.waterfall([
-      functions.sqlFunctions.showProducts,
-      functions.purchaseQuestion
+    async.waterfall([ // Forces the Full Execution of Each Function Before Proceding
+      functions.sqlFunctions.showProducts, // Displays Products to Terminal
+      functions.purchaseQuestion // Ask The User Questions Relating to Purchasing an Item
     ], error => {if (error) throw error;});
 
-};
+}; // End of bamazonCustomer Function
+
+
 
 
 /////////////////////////////////////////////// /* Import */ //////////////////////////////////////////////////////////

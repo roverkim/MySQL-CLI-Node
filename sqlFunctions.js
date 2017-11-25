@@ -1,24 +1,28 @@
 /////////////////////////////////////////////// /* Imports */ ////////////////////////////////////////////////////////
-require('console.table');
-const mysql = require('mysql');
-const inquirer = require('inquirer');
-const async = require('async');
-const questions = require('./questions/questions.js');
+require('console.table'); // Package that Turns an Object into A Table
+const mysql = require('mysql'); // Package that Allows for mysql Connections
+const inquirer = require('inquirer'); // Package for Displaying and Getting User Input
+const async = require('async'); // Package that Forces Asynchronus Functions to Execute Synchronously
+const index = require('./index.js'); // Internal File that Contains getUserType Function
+const questions = require('./questions/questions.js'); // Internal File that Contains all Questions
 
-/////////////////////////////////////////////// /* Establish Connections */ ////////////////////////////////////////////////////////
-const connection = mysql.createConnection({host: "localhost", user: "root", password: "Watlow4007", multipleStatements: true});
-
-const clearTerminal = () => {
-  process.stdout.write('\033c');
-}
+/////////////////////////////////////////////// /* Establish Connection Function */ ////////////////////////////////////////////////////////
+const connection = mysql.createConnection(
+  {
+    host: "localhost",
+    user: "root", // Change Your to your Connection Username
+    password: "Watlow4007", // Change to Your Connection Password
+    multipleStatements: true   // Without this setting, multiline queries will not work
+  }
+); // End of connection
 
 /////////////////////////////////////////////// /* Query Functions */ ////////////////////////////////////////////////////////
-
-sqlFunctions = {
+const sqlFunctions = { // sqlFunctions Object that Contains All the SQL Function Logic
 
   // Create Database bamazon_db
   createDb: function(callback) {
 
+    // Sends a mySQL query to the Database
     connection.query(`
         DROP DATABASE IF EXISTS bamazon_db;
         CREATE DATABASE bamazon_db;
@@ -27,12 +31,12 @@ sqlFunctions = {
       if (error) throw error;
 
       console.log("\n Database bamazon_db has been Created!");
-      callback(null);
+      callback(null); // This is Needed For Aysnc Package to Work. The Next Function in the waterFall is passed as a callback, ensuring that the function is executed sequentially ;
 
-    }) // End of Query
+    }); // End of Query
   }, // End of createDb
 
-  // Create Table products
+  // Create products and departments Table
   createTable: (callback) => {
 
     connection.query(`
@@ -56,13 +60,15 @@ sqlFunctions = {
 
       if (error) throw error;
 
-      console.log("\n Products and Deparments Table Has Been Created!")
-      callback(null);
+      console.log("\n Products and Deparments Table Has Been Created!");
+      callback(null); // This is Needed For Aysnc Package to Work. The Next Function in the waterFall is passed as a callback, ensuring that the function is executed sequentially ;
+
     }); // End of Query
 
   }, // End of createTable
 
-  createMockData: (callback) => { // Create Mock Data
+  // Create Mock Data and Input the Data into products and departments Table
+  createMockData: (callback) => {
 
     connection.query(`
           USE bamazon_db;
@@ -90,9 +96,9 @@ sqlFunctions = {
       if (error) throw error;
 
       console.log("\n Data Sucessfully Inserted \n");
-      callback(null);
+      callback(null); // This is Needed For Aysnc Package to Work. The Next Function in the waterFall is passed as a callback, ensuring that the function is executed sequentially ;
 
-    }) // End of Query
+    }); // End of Query
   }, // End of Mock Data
 
   // Display Current Products
@@ -106,16 +112,15 @@ sqlFunctions = {
 
       if (error) throw error;
 
-
       // Display Product ID, Name and Price
       console.log(`
             Items Available for Sale
           ------------------------------
           `);
 
-      console.table(results[1]);
+      console.table(results[1]); // Display Results in a Table Format
 
-      // results[1].forEach((product) => {
+      // results[1].forEach((product) => {   // Use This Code if you do not want to Display as A Table Format
       //
       //   console.log(`
       //       Product Name : ${product.product_name}
@@ -127,16 +132,16 @@ sqlFunctions = {
       //         `)
       // }) // End of forEach
 
-
-      if (callback) {
-        callback(null);
+      if (callback) { // If callback Is Passed, Execute callback
+        callback(null); // This is Needed For Aysnc Package to Work. The Next Function in the waterFall is passed as a callback, ensuring that the function is executed sequentially ;
       } else {
-        wantToContinue();
+        wantToContinue(); // Ask User if they Want to Continue
       }
+
     }); // End of Query
   }, // End of showProducts
 
-  // Check Available Quantities
+  // Check Available Product Quantities
   checkQuantity: (productID, quanitiy) => {
 
     connection.query(`
@@ -150,21 +155,21 @@ sqlFunctions = {
 
       if (error) throw error;
 
-      console.log(" \n Items Purchased ");
+      let quantity = result[1][0].stock_quantity - quanitiy; // Subtract Quantity Purchased from Actual Quanity in Inventory
 
-      if (result[1][0].stock_quantity >= 1) { // Proceed to Update Quantity if quantity is more than 1
-        let quantity = result[1][0].stock_quantity - quanitiy;
-        let totalRevenue = (result[1][0].price * quanitiy) + result[1][0].product_sales
-        sqlFunctions.updateQuantity(productID, quantity, totalRevenue);
+      if (quantity >= 0) { // Proceed to Update Quantity if Quantity of Product is more than 1
+        console.log(" \n Item Purchased! ");
+        let totalRevenue = (result[1][0].price * quanitiy) + result[1][0].product_sales // Take Price of Product Multiplied by Quantity and Add to Existing Product Revenue
+        sqlFunctions.updateQuantity(productID, quantity, totalRevenue); // Updates the Database by passing ID, New quantity and revenue as arguments
       } else {
-        console.log("\n Insufficient quantity!")
-
-        wantToContinue();
+        console.log("\n Insufficient quantity!");
+        wantToContinue(); // Ask if the User Would Like to Continue
       }
-    }) // End of Query
+
+    }); // End of Query
   }, // End of pullProducts
 
-  // Function to Update Quantity
+  // Function to Update Quantity and Revenue Based On Product ID
   updateQuantity: (productID, quantity, totalRevenue) => {
 
     connection.query(`
@@ -172,15 +177,17 @@ sqlFunctions = {
         UPDATE products
         SET ?, ?
         WHERE ?
-        `, [
-      {
-        stock_quantity: quantity
-      }, {
-        product_sales: totalRevenue
-      }, {
-        item_id: productID
-      }
-    ], (error, result) => {
+        `,
+        [{
+            stock_quantity: quantity
+          },
+          {
+            product_sales: totalRevenue
+          },
+          {
+            item_id: productID
+        }],
+     (error, result) => {
 
       if (error) throw error;
 
@@ -190,6 +197,7 @@ sqlFunctions = {
     }) // End of query
   }, // End of updateQuantity
 
+  // Shows Products that Have an Inventory Lower than 5
   showLowInventory: () => {
 
     connection.query(`
@@ -208,7 +216,8 @@ sqlFunctions = {
           `);
 
       console.table(results[1]);
-      // results[1].forEach((product) => {
+
+      // results[1].forEach((product) => { // Use This if you do not Want to Display the Results as a Table
       //
       //   console.log(`
       //         Product Name : ${product.product_name}
@@ -223,12 +232,14 @@ sqlFunctions = {
       // }) // End of forEach
 
       wantToContinue();
+
     }); // End of Query
   }, // End of showLowInventory
 
+  // Add More Quanity to a Product's Inventory
   addToInventory: () => {
 
-    const updateQuestion = (callback) => {
+    const updateQuestion = (callback) => { // Ask User Which Product they would Like to Add Inventory to
 
       inquirer.prompt(questions.updateQuantity).then((answer) => {
         connection.query(`
@@ -246,12 +257,12 @@ sqlFunctions = {
           sqlFunctions.updateQuantity(answer.updateID, quantity, result[1][0].product_sales);
         }) // End of Query
 
-        callback(null);
+        callback(null); // This is Needed For Aysnc Package to Work. The Next Function in the waterFall is passed as a callback, ensuring that the function is executed sequentially ;
       }) // End of inquirer
 
     }; // End of updateQuestion
 
-    async.waterfall([
+    async.waterfall([ // Force showProducts to Execute Fully Before Asking The User Questions Pertaining to Adding More Inventory to a Product
       sqlFunctions.showProducts, updateQuestion
     ], error => {
       if (error) throw error
@@ -259,6 +270,7 @@ sqlFunctions = {
 
   }, // End of addToInventory
 
+  // Add A New Product to Inventory
   addNewProduct: () => {
 
     inquirer.prompt(questions.addNewProduct).then((answer) => {
@@ -273,16 +285,18 @@ sqlFunctions = {
 
         console.log("\n Data Sucessfully Inserted \n");
 
+        wantToContinue();
 
       }) // End of Query
     }); // End of Prompt
   }, // End of addNewProduct
 
+  // List Total Sales By Department
   productSalesDepartment: () => {
 
     connection.query(`
       USE bamazon_db;
-      SELECT departments.department_name, departments.department_name, departments.over_head_costs, products.product_sales,
+      SELECT departments.department_name, departments.over_head_costs, sum(products.product_sales),
       products.product_sales - departments.over_head_costs as total_profit
       FROM departments
       LEFT JOIN products
@@ -300,6 +314,7 @@ sqlFunctions = {
 
   }, // End of productSalesDepartment
 
+  // Create A New Department
   newDepartment: () => {
 
     inquirer.prompt(questions.newDepartment).then((answer) => {
@@ -319,59 +334,63 @@ sqlFunctions = {
   }, // End of newDepartment
 }; // End of sqlFunctions Object
 
-/////////////////////////////////////////////// /* Question Functions */ ////////////////////////////////////////////////////////
+/////////////////////////////////////////////// /* miscellaneous Functions */ //////////////////////////////////////////////////////////
 
+// Function for Getting User Type //
 const getUserType = function() {
 
-  inquirer.prompt(questions.whichUser).then((answer) => {
+  inquirer.prompt(questions.whichUser).then((answer) => {  // Prompt User for User Type
 
-    switch (answer.whichUser) {
+    switch (answer.whichUser) { // Evaluates Response and Executes Functions Relating to the User Type
       case "Customer":
-        clearTerminal()
+        clearTerminal(); // Function that Clears The Bash Terminal
         const customer = require('./views/bamazonCustomer.js');
         customer();
         break;
       case "Manager":
-        clearTerminal()
+        clearTerminal();
         const manager = require('./views/bamazonManager.js');
         manager();
         break;
       case "Supervisor":
-        clearTerminal()
+        clearTerminal();
         const supervisor = require('./views/bamazonSupervisor.js');
         supervisor();
         break;
       default:
         clearTerminal();
-        process.exit();
+        process.exit(); // Exit the Program
     } // End Switch
 
   }) // End of Prompt
 }; // End of getUserType
 
-/////////////////////////////////////////////// /* Customer Questions*/ ////////////////////////////////////////////////////////
+// Funtion for Getting Customer Purchase //
+const purchaseQuestion = () => { // Function that Asks and Gets User Input for the Item they Want to Purchase
 
-const purchaseQuestion = (callback) => {
+  inquirer.prompt(questions.customer).then((answer) => { // Get User Input
 
-  inquirer.prompt(questions.customer).then((answer) => {
-
-    if (answer.ask.toLowerCase().slice(0, 1) == "y") {
-      sqlFunctions.checkQuantity(answer.productID, answer.quantity);
-
-    } else {
+    if (answer.ask.toLowerCase().slice(0, 1) == "y") { // If User Wants To Purchase an Item
+      sqlFunctions.checkQuantity(answer.productID, answer.quantity); // Execute checkQuantity, sending Product ID and Quanity As Arguments
+    } else { // Exit From Program
       console.log("Thank you for your time!");
       process.exit();
     }
+
   }) // End of inquirer
 
 }; // End of purchaseQuestion
 
+// Function That Clears the Bash Terminal //
+const clearTerminal = () => {process.stdout.write('\033c')};
+
+// Function that Prompts The User Asking if They Want to Continue
 const wantToContinue = () => {
 
   inquirer.prompt(questions.wantToContinue).then((answer) => {
     if (answer.wantToContinue.toLowerCase().slice(0, 1) == "y") {
-      clearTerminal();
-      getUserType();
+      clearTerminal(); // Function that Clears The Bash Terminal
+      getUserType(); // Ask For User Type
     } else {
       console.log("Thank you for your time!");
       process.exit();

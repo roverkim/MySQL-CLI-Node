@@ -1,6 +1,6 @@
 /////////////////////////////////////////////// /* Imports */ //////////////////////////////////////////////////////////
 
-const questions = {
+const questions = { // Inquirer Questions
 
     whichUser : [{
 
@@ -9,14 +9,14 @@ const questions = {
       message: "\n Please Select A User Type \n",
       choices: ["Customer", "Manager", "Supervisor", "Exit"]
       }
-    ], // End of whichUser Array
+    ], // End of whichUser
 
     customer : [{
 
       type : "input",
       name : "ask",
       message : "\n Would you like to purchase an item? (yes/no)",
-      validate : (value) => (value.toLowerCase().slice(0,1) == "y") || value.toLowerCase().slice(0,1) == "n" ? true : console.log(" Please input either yes or no"),
+      validate : (value) => (value.toLowerCase().slice(0,1) == "y") || value.toLowerCase().slice(0,1) == "n" ? true : "Please input either yes or no",
       default : "yes"
     },
     {
@@ -33,7 +33,7 @@ const questions = {
       validate : (value) => Number.isInteger(parseInt(value))? true : "Invalid Input! Please input a whole number!",
       default : "1"
     }
-  ], // End of Customer Array
+  ], // End of Customer
 
   manager : [{
 
@@ -42,7 +42,7 @@ const questions = {
     message : "\n Please Select an Option \n",
     choices : ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"]
     }
-  ], // End of Manager Array
+  ], // End of Manager
 
   updateQuantity : [{
 
@@ -59,7 +59,7 @@ const questions = {
       validate : (value) => Number.isInteger(parseInt(value))? true : " Invalid Input! Please input a whole number!"
 
     }
-  ], // End of updateQuantity Array
+  ], // End of updateQuantity
 
   addNewProduct :[{
       type : "input",
@@ -69,7 +69,8 @@ const questions = {
     {
       type : "input",
       name : "addPrice",
-      message : "\n Please Input the Price of the Product you would Like to Add : "
+      message : "\n Please Input the Price of the Product you would Like to Add : ",
+      validate: (value) => Number.isInteger(parseInt(value))? true : "Invalid Input! Please input a whole number!"
     },
     {
       type : "input",
@@ -86,7 +87,7 @@ const questions = {
       name : "addSales",
       message : "\n Please Input the Current Total Sales of the Product you would Like to Add : "
     }
-  ], // End of addNewProduct Array
+  ], // End of addNewProduct
 
   supervisor : [{
 
@@ -96,7 +97,7 @@ const questions = {
       choices : ["View Product Sales by Department" , "Create New Department", "Exit"]
 
     }
-  ],  // End of Supervisor Array
+  ],  // End of Supervisor
 
   newDepartment : [{
 
@@ -109,7 +110,7 @@ const questions = {
       name : "newDepartmentOverhead",
       message : "\n Please Input the Over Head Costs of the Deparment you Want to Add : "
     }
-  ], // End of newDepartment Array
+  ], // End of newDepartment
 
   wantToContinue : [{
 
@@ -122,7 +123,7 @@ const questions = {
     }
   ],
 
-} // End of Questions Array
+} // End of Questions Object
 
 
 
